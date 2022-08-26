@@ -154,12 +154,20 @@ daikon.Utils.fillBuffer = function (array, buffer, offset, numBytes) {
     var ctr;
 
     if (numBytes === 1) {
+        const view = new Uint8Array(buffer.buffer);
+        let i = offset;
         for (ctr = 0; ctr < array.length; ctr+=1) {
-            buffer.setUint8(offset + ctr, array[ctr]);
+            // buffer.setUint8(offset + ctr, array[ctr]);
+            view[i] = array[ctr];
+            i++;
         }
     } else if (numBytes === 2) {
+        const view = new Uint16Array(buffer.buffer);
+        let i = Math.floor(offset/2); // floor should not be needed since it would be odd to try to have an odd offset for writing 2 byte data...
         for (ctr = 0; ctr < array.length; ctr+=1) {
-            buffer.setUint16(offset + (ctr * 2), array[ctr], true);
+            // buffer.setUint16(offset + (ctr * 2), array[ctr], true);
+            view[i] = array[ctr];
+            i++;
         }
     }
 };
