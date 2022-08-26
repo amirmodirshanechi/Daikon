@@ -752,11 +752,15 @@ daikon.Image.prototype.decompress = function () {
                 temp = decoder.decode(jpegs[ctr]);
                 numComponents = decoder.numComp;
 
-                if (decompressed === null) {
-                    decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
-                }
+                if (numFrames === 1 && numComponents === 1) {
+                    decompressed = new DataView(temp.buffer)
+                } else {
+                    if (decompressed === null) {
+                        decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
+                    }
 
-                (new Uint8Array(decompressed.buffer)).set(new Uint8Array(temp.buffer), (ctr * frameSize * numComponents));
+                    (new Uint8Array(decompressed.buffer)).set(new Uint8Array(temp.buffer), (ctr * frameSize * numComponents));
+                }
                 temp = null;
             }
 
@@ -771,9 +775,6 @@ daikon.Image.prototype.decompress = function () {
                 height = decoder.height;
                 numComponents = decoder.components.length;
 
-                if (decompressed === null) {
-                    decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
-                }
 
                 if (this.getBitsAllocated() === 8) {
                     decoded = decoder.getData(width, height);
@@ -781,9 +782,15 @@ daikon.Image.prototype.decompress = function () {
                     decoded = decoder.getData16(width, height);
                 }
 
-                daikon.Utils.fillBuffer(decoded, decompressed, (ctr * frameSize * numComponents),
-                    parseInt(Math.ceil(this.getBitsAllocated() / 8)));
-
+                if (numFrames === 1 && numComponents === 1) {
+                    decompressed = new DataView(decoded.buffer);
+                } else {
+                    if (decompressed === null) {
+                        decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
+                    }
+                    daikon.Utils.fillBuffer(decoded, decompressed, (ctr * frameSize * numComponents),
+                        parseInt(Math.ceil(this.getBitsAllocated() / 8)));
+                }
                 decoded = null;
             }
 
@@ -799,13 +806,16 @@ daikon.Image.prototype.decompress = function () {
                 decoded = decoder.tiles[0].items;
                 numComponents = decoder.componentsCount;
 
-                if (decompressed === null) {
-                    decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
-                }
+                if (numFrames === 1 && numComponents === 1) {
+                    decompressed = new DataView(decoded.buffer);
+                } else {
+                    if (decompressed === null) {
+                        decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
+                    }
 
-                daikon.Utils.fillBuffer(decoded, decompressed, (ctr * frameSize * numComponents),
-                    parseInt(Math.ceil(this.getBitsAllocated() / 8)));
-
+                    daikon.Utils.fillBuffer(decoded, decompressed, (ctr * frameSize * numComponents),
+                        parseInt(Math.ceil(this.getBitsAllocated() / 8)));
+                }   
                 decoded = null;
             }
 
@@ -821,13 +831,16 @@ daikon.Image.prototype.decompress = function () {
                 decoded = decoded.pixelData;
                 numComponents = this.getNumberOfSamplesPerPixel();
 
-                if (decompressed === null) {
-                    decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
-                }
+                if (numFrames === 1 && numComponents === 1) {
+                    decompressed = new DataView(decoded.buffer);
+                } else {
+                    if (decompressed === null) {
+                        decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
+                    }
 
-                daikon.Utils.fillBuffer(decoded, decompressed, (ctr * frameSize * numComponents),
-                    parseInt(Math.ceil(this.getBitsAllocated() / 8)));
-
+                    daikon.Utils.fillBuffer(decoded, decompressed, (ctr * frameSize * numComponents),
+                        parseInt(Math.ceil(this.getBitsAllocated() / 8)));
+                }   
                 decoded = null;
             }
 
@@ -840,11 +853,15 @@ daikon.Image.prototype.decompress = function () {
                 temp = decoder.decode(rle[ctr], this.littleEndian, this.getRows() * this.getCols());
                 numComponents = (decoder.numSegments === 3 ? 3 : 1);
 
-                if (decompressed === null) {
-                    decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
+                if (numFrames === 1 && numComponents === 1) {
+                    decompressed = new DataView(decoded.buffer);
+                } else {
+                    if (decompressed === null) {
+                        decompressed = new DataView(new ArrayBuffer(frameSize * numFrames * numComponents));
+                    }
+                    daikon.Utils.fillBuffer(decoded, decompressed, (ctr * frameSize * numComponents),
+                        parseInt(Math.ceil(this.getBitsAllocated() / 8)));
                 }
-
-                (new Uint8Array(decompressed.buffer)).set(new Uint8Array(temp.buffer), (ctr * frameSize * numComponents));
                 temp = null;
             }
 
