@@ -159,7 +159,13 @@ daikon.Image.prototype.getSeriesNumber = function () {
     return daikon.Image.getSingleValueSafely(this.getTag(daikon.Tag.TAG_SERIES_NUMBER[0], daikon.Tag.TAG_SERIES_NUMBER[1]), 0);
 };
 
-
+/**
+ * Returns the Frame of Reference UID
+ * @returns {string}
+ */
+daikon.Image.prototype.getFrameOfReferenceUID = function () {
+    return daikon.Image.getSingleValueSafely(this.getTag(daikon.Tag.TAG_FRAME_OF_REF_UID[0], daikon.Tag.TAG_FRAME_OF_REF_UID[1]), 0);
+};
 
 /**
  * Returns the echo number.
